@@ -140,8 +140,8 @@ impl State {
     fn input(&mut self, e: &WindowEvent) -> bool {
         match e {
             WindowEvent::CursorMoved { position, .. } => {
-                self.cursor_x = position.x;
-                self.cursor_y = position.y;
+                self.cursor_x = position.x / self.size.width as f64;
+                self.cursor_y = position.y / self.size.height as f64;
                 true
             }
             _ => false,
