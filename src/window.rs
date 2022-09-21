@@ -64,6 +64,8 @@ struct State {
     queue: wgpu::Queue,
     config: wgpu::SurfaceConfiguration,
     size: winit::dpi::PhysicalSize<u32>,
+    cursor_x: f64,
+    cursor_y: f64,
 }
 
 impl State {
@@ -112,12 +114,17 @@ impl State {
 
         surface.configure(&device, &config);
 
+        let cursor_x: f64 = 0.0;
+        let cursor_y: f64 = 0.0;
+
         Self {
             surface,
             device,
             queue,
             config,
             size,
+            cursor_x,
+            cursor_y,
         }
     }
 
@@ -130,8 +137,15 @@ impl State {
         }
     }
 
-    fn input(&mut self, _event: &WindowEvent) -> bool {
-        false
+    fn input(&mut self, e: &WindowEvent) -> bool {
+        match e {
+            WindowEvent::CursorMoved { position, .. } => {
+                self.cursor_x = position.x;
+                self.cursor_y = position.y;
+                true
+            }
+            _ => false,
+        }
     }
 
     fn update(&mut self) {}
@@ -155,8 +169,8 @@ impl State {
                 resolve_target: None,
                 ops: wgpu::Operations {
                     load: wgpu::LoadOp::Clear(wgpu::Color {
-                        r: 0.1,
-                        g: 0.2,
+                        r: self.cursor_x,
+                        g: self.cursor_y,
                         b: 0.3,
                         a: 1.0,
                     }),
